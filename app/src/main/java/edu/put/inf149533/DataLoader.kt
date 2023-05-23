@@ -19,8 +19,8 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class DataLoader(val context: Context) {
     var games:MutableList<Game> = mutableListOf()
+    val dbHandler = MyDBHandler(context, null, null, 1)
     fun downloadFile(BGCurl : String){
-        println("witam w download")
         val urlString = BGCurl
         val xmlDirectory = File("${context.filesDir}/XML")
         if(!xmlDirectory.exists()) xmlDirectory.mkdir()
@@ -54,7 +54,6 @@ class DataLoader(val context: Context) {
         }
     }
     fun loadData(){
-        println("witam w loadData")
         val filename = "user.xml"
         val path = context.filesDir
         val inDir = File(path, "XML")
@@ -92,8 +91,6 @@ class DataLoader(val context: Context) {
                                 }
                             }
                         }
-                        println("sdas")
-                        println(originalTitle)
                         val game = Game(title,originalTitle,year,id,img)
                         games.add(game)
                     }
@@ -102,9 +99,15 @@ class DataLoader(val context: Context) {
         }
     }
     fun showData(){
-        println("Witam w showdata")
+        val idList: MutableList<Long> = mutableListOf()
         for(game in games){
-            println(game.id.toString() + game.originalTitle + game.title + game.img + game.year)
+            if(idList.contains(game.id)){
+                continue
+            }
+            idList.add(game.id)
+            if(dbHandler.findGame(game.id) == null) {
+                dbHandler.addGame(game)
+            }
         }
     }
 }

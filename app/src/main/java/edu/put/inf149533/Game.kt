@@ -7,10 +7,10 @@ class Game {
     var year: Int=0
     var img: String?=null
     constructor(title:String, originalTitle:String, year: Int, id: Long, img: String){
+        this.id=id
         this.title = title
         this.originalTitle=originalTitle
         this.year=year
-        this.id=id
         this.img=img
     }
 }
