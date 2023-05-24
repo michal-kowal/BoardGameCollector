@@ -63,6 +63,42 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         db.insert(TABLE_USERS_INFO, null, values)
     }
 
+    fun deleteUsers(){
+        val query = "DELETE FROM $TABLE_USERS_INFO"
+        val db = this.writableDatabase
+        db.execSQL(query)
+    }
+
+    fun deleteGames(){
+        val query = "DELETE FROM $TABLE_GAMES"
+        val db = this.writableDatabase
+        db.execSQL(query)
+    }
+
+    fun countGames(): Int {
+        val query = "SELECT COUNT(*) FROM $TABLE_GAMES"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query, null)
+        var res = 0
+        if(cursor.moveToFirst()){
+            res = cursor.getInt(0)
+            cursor.close()
+        }
+        return res
+    }
+
+    fun getSync(): String {
+        val query = "SELECT $COLUMN_SYNC FROM $TABLE_USERS_INFO"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query, null)
+        var res = ""
+        if(cursor.moveToFirst()){
+            res = cursor.getString(0)
+            cursor.close()
+        }
+        return res
+    }
+
     fun findGame(gameID: Long):Game?{
         val query = "SELECT * FROM $TABLE_GAMES WHERE $COLUMN_ID = $gameID"
         val db = this.writableDatabase

@@ -28,7 +28,6 @@ class DataLoader(val context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 val url = URL(urlString)
-                println(url)
                 val reader = url.openStream().bufferedReader()
                 val downloadFile = File(fileName).also{it.createNewFile()}
                 val writer = FileWriter(downloadFile).buffered()
@@ -63,14 +62,12 @@ class DataLoader(val context: Context) {
                 val xmlDoc: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
                 xmlDoc.documentElement.normalize()
                 if(filename == "user.xml"){
-                    println("SDA")
                     val items: NodeList = xmlDoc.getElementsByTagName("user")
                     for (i in 0 until items.length){
                         val item : Node = items.item(i)
                         if (item.nodeType == Node.ELEMENT_NODE){
                             val elem = item as Element
                             if(elem.getAttribute("name") != "") user = true
-                            println(elem.getAttribute("name"))
                         }
                     }
                 }
@@ -113,7 +110,6 @@ class DataLoader(val context: Context) {
         }
     }
     fun showData(dbHandler: MyDBHandler, filename: String, username: String){
-        if(!user) println("Nie ma takiego")
         if (filename=="games.xml") {
             val idList: MutableList<Long> = mutableListOf()
             for (game in games) {
