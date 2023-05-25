@@ -28,7 +28,7 @@ class NewUserFragment(val context1: Context, val db: MyDBHandler) : Fragment() {
         logInButton.setOnClickListener{
             db.deleteUsers()
             db.deleteGames()
-            val url = "https://boardgamegeek.com/xmlapi2/user?name="+username.text.toString()
+            var url = "https://boardgamegeek.com/xmlapi2/user?name="+username.text.toString()
             DataLoader(context1).loadData("user.xml")
             DataLoader(context1).showData(db, "user.xml", username.text.toString())
             DataLoader(context1).downloadFile(url, db, "user.xml", username.text.toString())
@@ -36,12 +36,20 @@ class NewUserFragment(val context1: Context, val db: MyDBHandler) : Fragment() {
             val text = "Press Log In button to continue"
             val toast = Toast.makeText(context1, text, duration)
             toast.show()
+            url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
+                    username.text.toString() +
+                    "&subtype=boardgame&excludesubtype=boardgameexpansion&own=1"
+            println(url)
+            DataLoader(context1).loadData("games.xml")
+            DataLoader(context1).showData(db, "games.xml", username.text.toString())
+            DataLoader(context1).downloadFile(url, db, "games.xml", username.text.toString())
             }
 
         nextButton.setOnClickListener{
             val logInResult = db.ifUser()
             var text = ""
             if(logInResult == null){
+                text = "User doesn't exist in BoardGameGeek"
                 val toast = Toast.makeText(context1, text, duration) // in Activity
                 toast.show()
                 nextButton.visibility = View.INVISIBLE
@@ -49,13 +57,6 @@ class NewUserFragment(val context1: Context, val db: MyDBHandler) : Fragment() {
                 text = "Welcome $logInResult"
                 val toast = Toast.makeText(context1, text, duration) // in Activity
                 toast.show()
-                val url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
-                        username.text.toString() +
-                        "&subtype=boardgame&excludesubtype=boardgameexpansion&own=1"
-                println(url)
-                DataLoader(context1).loadData("games.xml")
-                DataLoader(context1).showData(db, "games.xml", username.text.toString())
-                DataLoader(context1).downloadFile(url, db, "games.xml", username.text.toString())
                 val intent = Intent(context1, MainActivity::class.java)
                 startActivity(intent)
             }

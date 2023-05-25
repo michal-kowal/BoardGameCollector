@@ -40,6 +40,7 @@ class DataLoader(val context: Context) {
                 withContext(Dispatchers.Main){
                     loadData(filename)
                     showData(myDB, filename, username)
+                    println("witam w load")
                 }
             } catch(e: Exception){
                 withContext(Dispatchers.Main){
@@ -121,6 +122,7 @@ class DataLoader(val context: Context) {
                     dbHandler.addGame(game)
                 }
             }
+
         }
         else if (filename=="user.xml" && user){
             dbHandler.addUser(username)

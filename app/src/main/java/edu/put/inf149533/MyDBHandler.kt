@@ -3,11 +3,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.content.Context
 import android.content.ContentValues
+import android.view.View
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MyDBHandler (context: Context, name: String?, factory: SQLiteDatabase.CursorFactory?,
 version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION){
+
     companion object{
         private val DATABASE_VERSION = 1
         private val DATABASE_NAME = "bgcDB.db"
@@ -39,6 +41,11 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int){
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GAMES)
         onCreate(db)
+    }
+
+    fun dropTables(){
+        this.writableDatabase.execSQL("DROP TABLE $TABLE_USERS_INFO")
+        this.writableDatabase.execSQL("DROP TABLE $TABLE_GAMES")
     }
 
     fun addGame(game: Game){
@@ -84,6 +91,7 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
             res = cursor.getInt(0)
             cursor.close()
         }
+        //homescreenFragment?.refreshFragment()
         return res
     }
 
