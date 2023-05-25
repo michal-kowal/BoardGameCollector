@@ -135,4 +135,32 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         }
         return null
     }
+
+    fun getGamesList():MutableList<Game>{
+        var gamesList: MutableList<Game> = mutableListOf()
+        val query = "SELECT * FROM $TABLE_GAMES"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query, null)
+        var game: Game ?= null
+        if(cursor.moveToFirst()){
+            val id = cursor.getLong(0)
+            val title = cursor.getString(1)
+            val originalTitle = cursor.getString(2)
+            val year = cursor.getInt(3)
+            val img = cursor.getString(4)
+            game = Game(title, originalTitle, year, id, img)
+            gamesList.add(game)
+        }
+        while(cursor.moveToNext()){
+            val id = cursor.getLong(0)
+            val title = cursor.getString(1)
+            val originalTitle = cursor.getString(2)
+            val year = cursor.getInt(3)
+            val img = cursor.getString(4)
+            game = Game(title, originalTitle, year, id, img)
+            gamesList.add(game)
+        }
+        cursor.close()
+        return gamesList
+    }
 }

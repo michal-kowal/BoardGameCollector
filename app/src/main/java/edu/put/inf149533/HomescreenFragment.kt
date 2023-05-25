@@ -2,7 +2,6 @@ package edu.put.inf149533
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.Layout
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.navigation.fragment.findNavController
 
 
 class HomescreenFragment(val db: MyDBHandler) : Fragment() {
@@ -24,6 +23,7 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
     lateinit var rejectButton: Button
     lateinit var clearLayout: LinearLayout
     lateinit var confirmLayout: LinearLayout
+    lateinit var listGames: Button
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +35,7 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
         rejectButton = view1.findViewById(R.id.rejectButton)
         clearLayout = view1.findViewById(R.id.layoutClearData)
         confirmLayout = view1.findViewById(R.id.layoutConfirm)
+        listGames = view1.findViewById(R.id.GamesList)
         clearDataButton.setOnClickListener{
             confirmLayout.visibility = View.VISIBLE
             clearLayout.visibility = View.INVISIBLE
@@ -47,6 +48,9 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
                 db.deleteGames()
                 requireActivity().finishAffinity()
             }
+        }
+        listGames.setOnClickListener{
+            findNavController().navigate(R.id.action_homescreenFragment_to_gamesListFragment)
         }
         return view1
     }
