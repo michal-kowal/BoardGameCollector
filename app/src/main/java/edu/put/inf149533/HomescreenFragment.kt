@@ -2,6 +2,7 @@ package edu.put.inf149533
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,11 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         view1 = inflater.inflate(R.layout.fragment_homescreen, container, false)
+        view1.isFocusableInTouchMode = true
+        view1.requestFocus()
+        view1.setOnKeyListener { _, keyCode, _ ->
+            keyCode == KeyEvent.KEYCODE_BACK
+        }
         fillWithData()
         clearDataButton = view1.findViewById(R.id.ClearDataButton)
         confirmButton = view1.findViewById(R.id.confirmButton)
@@ -56,7 +62,7 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
             val gamesList = GamesListFragment(db)
             val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
             transaction.hide(this@HomescreenFragment)
-            transaction.add(android.R.id.content, gamesList) // Użyj android.R.id.content jako kontenera na poziomie aktywności
+            transaction.add(android.R.id.content, gamesList)
             transaction.addToBackStack(null)
             transaction.commit()
         }

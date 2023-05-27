@@ -6,14 +6,12 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
@@ -107,7 +105,14 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
                 val url = "https://boardgamegeek.com/xmlapi2/thing?id="+ game.id.toString()+ "&stats=1"
                 loadData("game_data.xml")
                 downloadFile(url, db, "game_data.xml", game.originalTitle.toString())
-
+                if(gameInfo.size != 0) {
+                    val gamesDet = GameDetFragment(game, gameInfo[0])
+                    val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+                    transaction.hide(this@GamesListFragment)
+                    transaction.add(android.R.id.content, gamesDet)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
+                }
             }
         }
     }
@@ -198,6 +203,7 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
                             }
                         }
                         val info = GameDesc(image, description, minplayers, maxplayers, rankValue)
+                        gameInfo.clear()
                         gameInfo.add(info)
                     }
                 }
