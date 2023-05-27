@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 
 
@@ -24,6 +26,7 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
     lateinit var clearLayout: LinearLayout
     lateinit var confirmLayout: LinearLayout
     lateinit var listGames: Button
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,8 +52,13 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
                 requireActivity().finishAffinity()
             }
         }
-        listGames.setOnClickListener{
-            findNavController().navigate(R.id.action_homescreenFragment_to_gamesListFragment)
+        listGames.setOnClickListener {
+            val gamesList = GamesListFragment(db)
+            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+            transaction.hide(this@HomescreenFragment)
+            transaction.add(android.R.id.content, gamesList) // Użyj android.R.id.content jako kontenera na poziomie aktywności
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
         return view1
     }

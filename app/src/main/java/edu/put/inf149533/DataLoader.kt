@@ -40,7 +40,6 @@ class DataLoader(val context: Context) {
                 withContext(Dispatchers.Main){
                     loadData(filename)
                     showData(myDB, filename, username)
-                    println("witam w load")
                 }
             } catch(e: Exception){
                 withContext(Dispatchers.Main){

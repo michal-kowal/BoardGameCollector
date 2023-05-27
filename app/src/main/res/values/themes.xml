@@ -13,5 +13,16 @@
         <item name="android:statusBarColor">#474747</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">#EEEEEE</item>
+        <item name="android:fontFamily">@font/be_vietnam_medium</item>
+    </style>
+    <style name="PopupMenuTheme" parent="@style/ThemeOverlay.AppCompat.Light">
+        <item name="android:itemTextAppearance">@style/PopupMenuTextAppearance</item>
+        <item name="android:itemBackground">@drawable/shape_menu</item>
+    </style>
+
+    <style name="PopupMenuTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/be_vietnam_medium</item>
     </style>
 </resources>

@@ -14,3 +14,18 @@ class Game {
         this.img=img
     }
 }
+
+class GameDesc{
+    var image: String?=null
+    var description: String?=null
+    var minplayers: Int = 0
+    var maxplayers: Int = 0
+    var rankValue: String ?=null
+    constructor(image:String, description:String, minplayers: Int, maxplayers: Int, rankValue: String){
+        this.image=image
+        this.description = description
+        this.minplayers=minplayers
+        this.maxplayers=maxplayers
+        this.rankValue=rankValue
+    }
+}

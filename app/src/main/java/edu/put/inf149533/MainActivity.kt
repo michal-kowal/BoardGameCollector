@@ -2,14 +2,14 @@ package edu.put.inf149533
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
+import androidx.navigation.fragment.NavHostFragment
 
 
 class MainActivity : AppCompatActivity() {
     val dbHandler = MyDBHandler(this, null, null, 1)
 
-    override fun onBackPressed() {
-        // zablokuj
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

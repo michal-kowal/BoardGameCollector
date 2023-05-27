@@ -1,14 +1,56 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gamesLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GamesListFragment">
+    android:background="@color/background">
 
     <TableLayout
-        android:id="@+id/tableLayout"
+        android:id="@+id/tableHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="*">
+        android:fontFamily="@font/be_vietnam_medium"
+        android:paddingBottom="12.5dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:stretchColumns="*"
+        android:textAlignment="center"
+        android:textColor="#ffffff">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape2">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/be_vietnam_medium"
+                android:text="OWNED GAMES"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:layout_weight="0.72"
+                android:letterSpacing="0.25"
+                />
+
+            <Button
+                android:id="@+id/orderButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="SORT"
+                android:layout_weight="0.28"/>
+        </TableRow>
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:fontFamily="@font/be_vietnam_medium"
+            android:textAlignment="center"
+            android:textColor="#ffffff">
+
+        </TableLayout>
     </TableLayout>
+
 </androidx.core.widget.NestedScrollView>
