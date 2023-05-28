@@ -57,7 +57,7 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         values.put(COLUMN_IMG, game.img)
         val db = this.writableDatabase
         db.insert(TABLE_GAMES, null, values)
-        db.close() // Czy na pewno?
+        db.close()
     }
 
     fun addUser(nickname: String){
@@ -68,18 +68,21 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         values.put(COLUMN_SYNC, currentDate)
         val db = this.writableDatabase
         db.insert(TABLE_USERS_INFO, null, values)
+        db.close()
     }
 
     fun deleteUsers(){
         val query = "DELETE FROM $TABLE_USERS_INFO"
         val db = this.writableDatabase
         db.execSQL(query)
+        db.close()
     }
 
     fun deleteGames(){
         val query = "DELETE FROM $TABLE_GAMES"
         val db = this.writableDatabase
         db.execSQL(query)
+        db.close()
     }
 
     fun countGames(): Int {
@@ -91,7 +94,6 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
             res = cursor.getInt(0)
             cursor.close()
         }
-        //homescreenFragment?.refreshFragment()
         return res
     }
 
@@ -133,6 +135,7 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
             cursor.close()
             return user
         }
+        db.close()
         return null
     }
 

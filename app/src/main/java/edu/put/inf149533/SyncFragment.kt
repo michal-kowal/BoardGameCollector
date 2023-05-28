@@ -53,6 +53,7 @@ class SyncFragment(val db: MyDBHandler) : Fragment() {
         no  = view.findViewById<Button>(R.id.RejectSync)
         val syncLayout = view.findViewById<LinearLayout>(R.id.progressBarLayout)
         button.setOnClickListener{
+            syncLayout.visibility = View.INVISIBLE
             if(res<24.0){
                 layout.visibility = View.VISIBLE
                 yes.setOnClickListener(){
