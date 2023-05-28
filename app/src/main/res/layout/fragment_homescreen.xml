@@ -6,11 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".HomescreenFragment">
+    tools:context=".HomescreenFragment"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="380dp"
+        android:id="@+id/syncLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shape"
         android:orientation="vertical"
@@ -19,14 +21,14 @@
         app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15">
+        app:layout_constraintVertical_bias="0.05">
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="23dp" />
 
         <TextView
-            android:id="@+id/WelcomeText"
+            android:id="@+id/syncTEXT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/be_vietnam_medium"
@@ -50,7 +52,7 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/GamesCount"
+                android:id="@+id/lastSyncInfo"
                 android:layout_width="280dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -145,7 +147,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+        app:layout_constraintTop_toBottomOf="@+id/syncLayout">
 
         <Space
             android:layout_width="wrap_content"
@@ -154,7 +156,7 @@
 
         <Button
             android:id="@+id/GamesList"
-            android:layout_width="120dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/shape"
@@ -173,7 +175,7 @@
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
@@ -184,7 +186,7 @@
 
         <Button
             android:id="@+id/ExtensionsList"
-            android:layout_width="120dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/shape"
@@ -203,7 +205,7 @@
         android:id="@+id/layoutClearData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
@@ -215,7 +217,7 @@
 
         <Button
             android:id="@+id/ClearDataButton"
-            android:layout_width="120dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/shape"
@@ -234,7 +236,7 @@
         android:id="@+id/layoutConfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         android:visibility="invisible"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
@@ -267,6 +269,36 @@
             android:background="@drawable/shape"
             android:fontFamily="@font/be_vietnam_medium"
             android:text="reject"
+            android:textSize="18sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/layoutClearData"
+        android:layout_marginTop="12dp">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/goToSync"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape"
+            android:fontFamily="@font/be_vietnam_medium"
+            android:text="synchronise"
             android:textSize="18sp" />
 
         <Space

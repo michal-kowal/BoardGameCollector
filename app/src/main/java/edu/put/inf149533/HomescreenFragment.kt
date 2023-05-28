@@ -11,8 +11,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 
 
 class HomescreenFragment(val db: MyDBHandler) : Fragment() {
@@ -27,11 +25,12 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
     lateinit var clearLayout: LinearLayout
     lateinit var confirmLayout: LinearLayout
     lateinit var listGames: Button
+    lateinit var goToSync: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         view1 = inflater.inflate(R.layout.fragment_homescreen, container, false)
         view1.isFocusableInTouchMode = true
         view1.requestFocus()
@@ -66,19 +65,27 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
             transaction.addToBackStack(null)
             transaction.commit()
         }
+        goToSync = view1.findViewById(R.id.goToSync)
+        goToSync.setOnClickListener{
+            val syncFragment = SyncFragment(db)
+            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+            transaction.hide(this@HomescreenFragment)
+            transaction.add(android.R.id.content, syncFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
         return view1
     }
     @SuppressLint("SetTextI18n")
     fun fillWithData() {
-        showUser = view1.findViewById(R.id.WelcomeText)
-        numGames = view1.findViewById(R.id.GamesCount)
+        showUser = view1.findViewById(R.id.syncTEXT)
+        numGames = view1.findViewById(R.id.lastSyncInfo)
         numExtensions = view1.findViewById(R.id.ExtensionsCount)
         lastSync = view1.findViewById(R.id.LastSync)
         val userRes = db.ifUser()
         showUser.text = showUser.text.toString() + " $userRes"
         val lastSyncRes = db.getSync()
         lastSync.text = lastSync.text.toString() + " $lastSyncRes"
-        println("tu już powinien być koniec")
         val gamesRes = db.countGames()
         numGames.text = numGames.text.toString() + " $gamesRes"
     }

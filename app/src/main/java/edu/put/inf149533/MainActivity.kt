@@ -2,8 +2,7 @@ package edu.put.inf149533
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
-import androidx.navigation.fragment.NavHostFragment
+
 
 
 class MainActivity : AppCompatActivity() {

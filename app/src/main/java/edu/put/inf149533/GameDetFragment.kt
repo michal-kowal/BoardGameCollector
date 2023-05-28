@@ -1,19 +1,12 @@
 package edu.put.inf149533
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
-import android.util.TypedValue
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TableLayout
-import android.widget.TableRow
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import org.w3c.dom.Text
 
 
 class GameDetFragment (val game: Game, val gameDet: GameDesc) : Fragment() {
