@@ -10,6 +10,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class NewUserFragment(val context1: Context, val db: MyDBHandler) : Fragment() {
     lateinit var logInButton: Button
@@ -25,6 +29,7 @@ class NewUserFragment(val context1: Context, val db: MyDBHandler) : Fragment() {
         username = view.findViewById(R.id.userName)
         nextButton = view.findViewById<Button>(R.id.LogIn)
         val duration = Toast.LENGTH_LONG
+
         logInButton.setOnClickListener{
             db.deleteUsers()
             db.deleteGames()
@@ -32,17 +37,22 @@ class NewUserFragment(val context1: Context, val db: MyDBHandler) : Fragment() {
             DataLoader(context1).loadData("user.xml")
             DataLoader(context1).showData(db, "user.xml", username.text.toString())
             DataLoader(context1).downloadFile(url, db, "user.xml", username.text.toString())
-            nextButton.visibility = View.VISIBLE
-            val text = "Press Log In button to continue"
-            val toast = Toast.makeText(context1, text, duration)
-            toast.show()
-            url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
-                    username.text.toString() +
-                    "&subtype=boardgame&excludesubtype=boardgameexpansion&own=1"
-            println(url)
-            DataLoader(context1).loadData("games.xml")
-            DataLoader(context1).showData(db, "games.xml", username.text.toString())
-            DataLoader(context1).downloadFile(url, db, "games.xml", username.text.toString())
+            CoroutineScope(Dispatchers.Main).launch {
+                url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
+                        username.text.toString() +
+                        "&subtype=boardgame&excludesubtype=boardgameexpansion&own=1"
+                println(url)
+                DataLoader(context1).loadData("games.xml")
+                DataLoader(context1).showData(db, "games.xml", username.text.toString())
+                DataLoader(context1).downloadFile(url, db, "games.xml", username.text.toString())
+                val text = "Press Log In button to continue"
+                val toast = Toast.makeText(context1, text, duration)
+                toast.show()
+            }
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(2000)
+                nextButton.visibility = View.VISIBLE
+            }
             }
 
         nextButton.setOnClickListener{

@@ -8,10 +8,7 @@ import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
@@ -102,16 +99,26 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
             tableLayout.addView(tableRow2)
             i += 1
             tableRow.setOnClickListener{
-                val url = "https://boardgamegeek.com/xmlapi2/thing?id="+ game.id.toString()+ "&stats=1"
-                loadData("game_data.xml")
-                downloadFile(url, db, "game_data.xml", game.originalTitle.toString())
-                if(gameInfo.size != 0) {
-                    val gamesDet = GameDetFragment(game, gameInfo[0])
-                    val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
-                    transaction.hide(this@GamesListFragment)
-                    transaction.add(android.R.id.content, gamesDet)
-                    transaction.addToBackStack(null)
-                    transaction.commit()
+                CoroutineScope(Dispatchers.Main).launch {
+                    val url =
+                        "https://boardgamegeek.com/xmlapi2/thing?id=" + game.id.toString() + "&stats=1"
+                    loadData("game_data.xml")
+                    downloadFile(url, db, "game_data.xml", game.originalTitle.toString())
+                    val text = "Loading content. Please wait!"
+                    val toast = Toast.makeText(requireContext(), text, Toast.LENGTH_LONG)
+                    toast.show()
+                }
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1500)
+                    if (gameInfo.size != 0) {
+                        val gamesDet = GameDetFragment(game, gameInfo[0])
+                        val transaction: FragmentTransaction =
+                            parentFragmentManager.beginTransaction()
+                        transaction.hide(this@GamesListFragment)
+                        transaction.add(android.R.id.content, gamesDet)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                    }
                 }
             }
         }
