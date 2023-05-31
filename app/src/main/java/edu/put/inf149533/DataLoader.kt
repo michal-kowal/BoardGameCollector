@@ -84,6 +84,7 @@ class DataLoader(val context: Context) {
                             var originalTitle = "N/A"
                             var year: Int = 0
                             var img = "https://ibij.put.poznan.pl/wp-content/uploads/2020/05/putLogoColor.png"
+                            var thumbnail = "https://ibij.put.poznan.pl/wp-content/uploads/2020/05/putLogoColor.png"
                             id = elem.getAttribute("objectid").toLong()
                             for(j in 0..children.length-1){
                                 val node = children.item(j)
@@ -95,13 +96,16 @@ class DataLoader(val context: Context) {
                                         "yearpublished" -> {
                                             year = node.textContent.toInt()
                                         }
-                                        "thumbnail" -> {
+                                        "image" -> {
                                             img = node.textContent.toString()
+                                        }
+                                        "thumbnail" -> {
+                                            thumbnail = node.textContent.toString()
                                         }
                                     }
                                 }
                             }
-                            val game = Game(title,originalTitle,year,id,img)
+                            val game = Game(title,originalTitle,year,id,img,thumbnail)
                             games.add(game)
                         }
                     }

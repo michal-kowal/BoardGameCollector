@@ -1,14 +1,17 @@
 package edu.put.inf149533
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -69,6 +72,7 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     fun showData(view: View, listGames: MutableList<Game>){
         val tableLayout = view.findViewById<TableLayout>(R.id.tableLayout)
         tableLayout.removeAllViews()
@@ -81,29 +85,52 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
             cell1.text = i.toString()
             cell1.setTextColor(Color.WHITE)
             cell1.gravity = Gravity.CENTER_VERTICAL
-            cell1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-            tableRow.addView(cell1)
+            cell1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
 
-            val cell2 = TextView(requireContext())
-            cell2.text = "foto"
-            tableRow.addView(cell2)
+            val image = ImageView(requireContext())
+            val imageUrl = game.thumbnail
+
+            Picasso.get()
+                .load(imageUrl)
+                .resize(200, 150)
+                .into(image)
+
+            val linearLayout1 = LinearLayout(requireContext())
+            linearLayout1.orientation = LinearLayout.HORIZONTAL
+            linearLayout1.gravity = Gravity.CENTER_VERTICAL
+            linearLayout1.addView(cell1)
+
+            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            layoutParams.setMargins(40, 0, 20, 0)
+            layoutParams.width = 220
+            image.layoutParams = layoutParams
+
+            linearLayout1.addView(image)
+
+            //tableRow.addView(linearLayout1)
 
 
             val linearLayout = LinearLayout(requireContext())
             linearLayout.orientation = LinearLayout.VERTICAL
-
             val text1 = TextView(requireContext())
-            text1.text = game.originalTitle
+            text1.text = game.originalTitle.toString().substringBefore(':')
             text1.setTextColor(Color.WHITE)
             text1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-            text1.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+            text1.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            //text1.maxLines = 2
+            //text1.ellipsize = TextUtils.TruncateAt.END
+
             linearLayout.addView(text1)
             val text2 = TextView(requireContext())
             text2.text = "Year: " + game.year.toString()
             linearLayout.addView(text2)
             text2.setTextColor(Color.WHITE)
-
-            tableRow.addView(linearLayout)
+            linearLayout1.addView(linearLayout)
+            tableRow.addView(linearLayout1)
             tableLayout.addView(tableRow)
             val tableRow2 = TableRow(requireContext())
             tableRow2.setPadding(0,0,0, 25)
@@ -122,7 +149,7 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
                 CoroutineScope(Dispatchers.Main).launch {
                     delay(1500)
                     if (gameInfo.size != 0) {
-                        val gamesDet = GameDetFragment(game, gameInfo[0])
+                        val gamesDet = GameDetFragment(game, gameInfo[0], db)
                         val transaction: FragmentTransaction =
                             parentFragmentManager.beginTransaction()
                         transaction.hide(this@GamesListFragment)

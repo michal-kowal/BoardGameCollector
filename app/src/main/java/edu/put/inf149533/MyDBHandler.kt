@@ -22,6 +22,7 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         val COLUMN_ORIGINAL_TITLE = "originalTitle"
         val COLUMN_YEAR = "year"
         val COLUMN_IMG = "img"
+        val COLUMN_THUMBNAIL = "thumbnail"
 
         val COLUMN_NICK = "nick"
         val COLUMN_SYNC = "sync"
@@ -30,7 +31,7 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
     override fun onCreate(db: SQLiteDatabase){
         val CREATE_GAMES_TABLE = ("CREATE TABLE " + TABLE_GAMES + "(" + COLUMN_ID + " INTEGER PRIMARY KEY," +
                 COLUMN_TITLE + " TEXT," + COLUMN_ORIGINAL_TITLE + " TEXT," + COLUMN_YEAR + " INT," +
-                COLUMN_IMG + " TEXT" + ")")
+                COLUMN_IMG + " TEXT," + COLUMN_THUMBNAIL + " TEXT"  + ")")
         db.execSQL(CREATE_GAMES_TABLE)
 
         val CREATE_USER_INFO_TABLE = ("CREATE TABLE " + TABLE_USERS_INFO + "(" + COLUMN_NICK + " TEXT," +
@@ -55,6 +56,7 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         values.put(COLUMN_ORIGINAL_TITLE, game.originalTitle)
         values.put(COLUMN_YEAR, game.year)
         values.put(COLUMN_IMG, game.img)
+        values.put(COLUMN_THUMBNAIL, game.thumbnail)
         val db = this.writableDatabase
         db.insert(TABLE_GAMES, null, values)
         db.close()
@@ -119,7 +121,8 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
             val originalTitle = cursor.getString(2)
             val year = cursor.getInt(3)
             val img = cursor.getString(4)
-            game = Game(title, originalTitle, year, gameID, img)
+            val thumbnail = cursor.getString(5)
+            game = Game(title, originalTitle, year, gameID, img, thumbnail)
             cursor.close()
         }
         db.close()
@@ -151,7 +154,8 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
             val originalTitle = cursor.getString(2)
             val year = cursor.getInt(3)
             val img = cursor.getString(4)
-            game = Game(title, originalTitle, year, id, img)
+            val thumbnail = cursor.getString(5)
+            game = Game(title, originalTitle, year, id, img, thumbnail)
             gamesList.add(game)
         }
         while(cursor.moveToNext()){
@@ -160,7 +164,8 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
             val originalTitle = cursor.getString(2)
             val year = cursor.getInt(3)
             val img = cursor.getString(4)
-            game = Game(title, originalTitle, year, id, img)
+            val thumbnail = cursor.getString(5)
+            game = Game(title, originalTitle, year, id, img, thumbnail)
             gamesList.add(game)
         }
         cursor.close()

@@ -21,18 +21,20 @@
             android:id="@+id/header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_game">
+            android:background="@drawable/shape_game"
+            android:layout_weight="2">
 
             <TextView
                 android:id="@+id/textHeader"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="#ffffff"
                 android:textSize="26sp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
                 android:paddingRight="10dp"
-                android:paddingBottom="10dp">
+                android:paddingBottom="10dp"
+                android:textAlignment="center">
 
             </TextView>
         </TableRow>
@@ -40,19 +42,28 @@
         <TableRow
             android:id="@+id/foto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></TableRow>
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp">
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"/>
+        </TableRow>
 
         <TableLayout
             android:id="@+id/tableDetails"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/shape_game">
-
             <TableRow
                 android:id="@+id/buttonsRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center">
+                android:gravity="center"
+                android:paddingTop="5dp">
 
                 <Button
                     android:id="@+id/addButton"

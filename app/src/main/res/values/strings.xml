@@ -101,5 +101,7 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="authorities">edu.put.inf149533.fileprovider</string>
+    <string name="temp_images_dir">temp_images</string>
     <string name="sync_warn">Last synchronisation was less than 24h ago. Do you want to continue?</string>
 </resources>

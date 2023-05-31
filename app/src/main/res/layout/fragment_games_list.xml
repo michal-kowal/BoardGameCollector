@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/be_vietnam_medium"
         android:paddingBottom="12.5dp"
+        android:paddingTop="5dp"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
         android:stretchColumns="*"
@@ -43,7 +44,7 @@
         </TableRow>
         <TableLayout
             android:id="@+id/tableLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:stretchColumns="*"
             android:fontFamily="@font/be_vietnam_medium"
