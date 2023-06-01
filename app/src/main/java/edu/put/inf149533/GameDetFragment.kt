@@ -25,13 +25,12 @@ import java.io.OutputStream
 
 
 class GameDetFragment (val game: Game, val gameDet: GameDesc, val db: MyDBHandler) : Fragment() {
-    var counter = 0
-    lateinit var newRow: TableRow
     lateinit var newImage: ImageView
     private lateinit var resultLauncher: ActivityResultLauncher<Uri>
     private lateinit var mGetContent: ActivityResultLauncher<String>
     lateinit var tempImageUri: Uri
     lateinit var imagesDir: File
+    var delete = false
     private fun initTempUri(): Uri {
         val tempImagesDir = File(requireContext().filesDir, getString(R.string.temp_images_dir))
         tempImagesDir.mkdir()
@@ -109,7 +108,14 @@ class GameDetFragment (val game: Game, val gameDet: GameDesc, val db: MyDBHandle
             val dialog = builder.create()
             dialog.show()
         }
-
+        val del = view.findViewById<Button>(R.id.delButton)
+        del.setOnClickListener{
+            val toast = Toast.makeText(requireContext(),
+                "Click on picture to delete. You can't delete original picture.",
+                Toast.LENGTH_LONG)
+            toast.show()
+            delete = true
+        }
         generateTable(view)
         return view
     }
@@ -197,21 +203,34 @@ class GameDetFragment (val game: Game, val gameDet: GameDesc, val db: MyDBHandle
                 row?.addView(image)
                 count++
                 image.setOnClickListener {
-                    val dialog = Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
-                    val fullImageView = ImageView(context)
-                    dialog.setContentView(fullImageView)
-
-                    Picasso.get()
-                        .load(file)
-                        .into(fullImageView)
-
-                    fullImageView.setOnClickListener {
-                        dialog.dismiss()
+                    if(delete){
+                        file.delete()
+                        loadGallery(view)
+                        delete = false
                     }
+                    else {
+                        val dialog = Dialog(
+                            requireContext(),
+                            android.R.style.Theme_Black_NoTitleBar_Fullscreen
+                        )
+                        val fullImageView = ImageView(context)
+                        dialog.setContentView(fullImageView)
 
-                    dialog.show()
+                        Picasso.get()
+                            .load(file)
+                            .into(fullImageView)
+
+                        fullImageView.setOnClickListener {
+                            dialog.dismiss()
+                        }
+
+                        dialog.show()
+                    }
                 }
             }
+        }
+        else{
+            delete = false
         }
     }
 }
