@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class DataLoader(val context: Context) {
     var games:MutableList<Game> = mutableListOf()
+    var expansions:MutableList<Game> = mutableListOf()
     var user:Boolean = false
     fun downloadFile(BGCurl : String, myDB: MyDBHandler, filename: String, username: String){
         val urlString = BGCurl
@@ -71,7 +72,7 @@ class DataLoader(val context: Context) {
                         }
                     }
                 }
-                else {
+                else if (filename== "games.xml") {
                     val items: NodeList = xmlDoc.getElementsByTagName("item")
                     for(i in 0..items.length-1){
                         val itemNode: Node = items.item(i)
@@ -110,6 +111,44 @@ class DataLoader(val context: Context) {
                         }
                     }
                 }
+                else if (filename == "expansions.xml"){
+                    val items: NodeList = xmlDoc.getElementsByTagName("item")
+                    for(i in 0..items.length-1){
+                        val itemNode: Node = items.item(i)
+                        if(itemNode.nodeType==Node.ELEMENT_NODE){
+                            val elem = itemNode as Element
+                            val children = elem.childNodes
+                            var id: Long = 0
+                            var title = "N/A"
+                            var originalTitle = "N/A"
+                            var year: Int = 0
+                            var img = "https://ibij.put.poznan.pl/wp-content/uploads/2020/05/putLogoColor.png"
+                            var thumbnail = "https://ibij.put.poznan.pl/wp-content/uploads/2020/05/putLogoColor.png"
+                            id = elem.getAttribute("objectid").toLong()
+                            for(j in 0..children.length-1){
+                                val node = children.item(j)
+                                if(node is Element){
+                                    when(node.nodeName){
+                                        "name" -> {
+                                            originalTitle = node.textContent.toString()
+                                        }
+                                        "yearpublished" -> {
+                                            year = node.textContent.toInt()
+                                        }
+                                        "image" -> {
+                                            img = node.textContent.toString()
+                                        }
+                                        "thumbnail" -> {
+                                            thumbnail = node.textContent.toString()
+                                        }
+                                    }
+                                }
+                            }
+                            val game = Game(title,originalTitle,year,id,img,thumbnail)
+                            expansions.add(game)
+                        }
+                    }
+                }
             }
         }
     }
@@ -121,11 +160,23 @@ class DataLoader(val context: Context) {
                     continue
                 }
                 idList.add(game.id)
-                if (dbHandler.findGame(game.id) == null) {
-                    dbHandler.addGame(game)
+                if (dbHandler.findGame(game.id, "games") == null) {
+                    dbHandler.addGame(game, "games")
                 }
             }
 
+        }
+        else if(filename == "expansions.xml"){
+            val idList: MutableList<Long> = mutableListOf()
+            for (game in expansions) {
+                if (idList.contains(game.id)) {
+                    continue
+                }
+                idList.add(game.id)
+                if (dbHandler.findGame(game.id, "expansions") == null) {
+                    dbHandler.addGame(game, "expansions")
+                }
+            }
         }
         else if (filename=="user.xml" && user){
             dbHandler.addUser(username)

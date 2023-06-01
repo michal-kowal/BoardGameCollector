@@ -26,6 +26,7 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
     lateinit var confirmLayout: LinearLayout
     lateinit var listGames: Button
     lateinit var goToSync: Button
+    lateinit var extensionsList: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +45,7 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
         clearLayout = view1.findViewById(R.id.layoutClearData)
         confirmLayout = view1.findViewById(R.id.layoutConfirm)
         listGames = view1.findViewById(R.id.GamesList)
+        extensionsList = view1.findViewById(R.id.ExtensionsList)
         clearDataButton.setOnClickListener{
             confirmLayout.visibility = View.VISIBLE
             clearLayout.visibility = View.INVISIBLE
@@ -53,12 +55,21 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
             }
             confirmButton.setOnClickListener{
                 db.deleteUsers()
-                db.deleteGames()
+                db.deleteGames("games")
+                db.deleteGames("expansions")
                 requireActivity().finishAffinity()
             }
         }
         listGames.setOnClickListener {
-            val gamesList = GamesListFragment(db)
+            val gamesList = GamesListFragment(db, db.getGamesList("games"), "MY GAMES")
+            val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
+            transaction.hide(this@HomescreenFragment)
+            transaction.add(android.R.id.content, gamesList)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+        extensionsList.setOnClickListener{
+            val gamesList = GamesListFragment(db, db.getGamesList("expansions"), "MY EXPANSIONS")
             val transaction: FragmentTransaction = parentFragmentManager.beginTransaction()
             transaction.hide(this@HomescreenFragment)
             transaction.add(android.R.id.content, gamesList)
@@ -86,7 +97,9 @@ class HomescreenFragment(val db: MyDBHandler) : Fragment() {
         showUser.text = showUser.text.toString() + " $userRes"
         val lastSyncRes = db.getSync()
         lastSync.text = lastSync.text.toString() + " $lastSyncRes"
-        val gamesRes = db.countGames()
+        val gamesRes = db.countGames("games")
         numGames.text = numGames.text.toString() + " $gamesRes"
+        val extensionsRes = db.countGames("expansions")
+        numExtensions.text = numExtensions.text.toString() + " $extensionsRes"
     }
 }

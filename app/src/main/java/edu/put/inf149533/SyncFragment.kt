@@ -3,7 +3,6 @@ package edu.put.inf149533
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +12,6 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.findFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -72,12 +69,9 @@ class SyncFragment(val db: MyDBHandler) : Fragment() {
         }
         return view
     }
-    @SuppressLint("SetTextI18n")
-    fun synchronise(view: View) {
-        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
-        val progressTxt = view.findViewById<TextView>(R.id.textView2)
-        val gamesContentBefore = db.getGamesList()
-        db.deleteGames()
+
+    fun doSync(){
+        db.deleteGames("games")
         CoroutineScope(Dispatchers.Main).launch{
             val url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
                     db.ifUser().toString() +
@@ -86,40 +80,74 @@ class SyncFragment(val db: MyDBHandler) : Fragment() {
             DataLoader(requireContext()).showData(db, "games.xml", db.ifUser().toString())
             DataLoader(requireContext()).downloadFile(url, db, "games.xml", db.ifUser().toString())
         }
+        db.deleteGames("expansions")
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(1000)
+            val url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
+                    db.ifUser().toString() +
+                    "&subtype=boardgameexpansion&own=1"
+            DataLoader(requireContext()).loadData("expansions.xml")
+            DataLoader(requireContext()).showData(db, "expansions.xml", db.ifUser().toString())
+            DataLoader(requireContext()).downloadFile(url, db, "expansions.xml", db.ifUser().toString())
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun synchronise(view: View) {
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+        val progressTxt = view.findViewById<TextView>(R.id.textView2)
+        val gamesContentBefore = db.getGamesList("games")
+        val expansionsContentBefore = db.getGamesList("expansions")
+        CoroutineScope(Dispatchers.Main).launch {
+            doSync()
+            delay(2000)
+            doSync()
+            delay(2000)
+            doSync()
+        }
         CoroutineScope(Dispatchers.Main).launch {
             for (progress in 0..100) {
                 progressBar.progress = progress
                 progressTxt.text = "Synchronisation progress: " + progress.toString() + "%"
-                delay(100) // Opóźnienie aktualizacji o 100 milisekund
+                delay(100)
             }
             progressTxt.text = "Synchronisation finished!"
             delay(500)
-            val gamesContentAfter = db.getGamesList()
-            println("GAMECONTENTAFTER: " + gamesContentAfter.size.toString())
+            val gamesContentAfter = db.getGamesList("games")
+            val expansionsContentAfter = db.getGamesList("expansions")
             val missingGames: MutableList<Game> = mutableListOf()
+            val missingExpansions: MutableList<Game> = mutableListOf()
             for(game in gamesContentBefore){
                 if(game !in gamesContentAfter){
                     missingGames.add(game)
                 }
             }
-            if(missingGames.size>0){
-                askUserIfDelete(missingGames)
+            for(expansion in expansionsContentBefore)
+                if(expansion !in expansionsContentAfter){
+                    missingExpansions.add(expansion)
+                }
+            if(missingGames.size>0 || missingExpansions.size>0){
+                askUserIfDelete(missingGames, missingExpansions)
             }
         }
     }
 
-    fun askUserIfDelete(game: MutableList<Game>){
+    fun askUserIfDelete(game: MutableList<Game>, expansion: MutableList<Game>){
         val size = game.size
+        val exSize = expansion.size
         val builder = AlertDialog.Builder(requireContext(), R.style.CustomDialogStyle)
-        builder.setTitle("Missing Games")
-        builder.setMessage("It seems that $size games are no longer in your collection. Do you want " +
+        builder.setTitle("Missing Positions")
+        builder.setMessage("It seems that $size games and $exSize expansions are no longer in your collection. Do you want " +
                 "to delete them?")
         builder.setPositiveButton("Yes") { dialog, which ->
 
         }
         builder.setNegativeButton("No") { dialog, which ->
             for(g in game){
-                db.addGame(g)
+                db.addGame(g, "games")
+            }
+            for(e in expansion){
+                db.addGame(e, "expansions")
             }
         }
         val dialog = builder.create()

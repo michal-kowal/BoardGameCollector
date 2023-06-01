@@ -191,7 +191,7 @@
             android:layout_weight="1"
             android:background="@drawable/shape"
             android:fontFamily="@font/be_vietnam_medium"
-            android:text="extensions list"
+            android:text="expansions list"
             android:textSize="18sp" />
 
         <Space

@@ -16,6 +16,7 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
 
         val TABLE_GAMES = "games"
         val TABLE_USERS_INFO = "users_info"
+        val TABLE_EXPANSIONS = "expansions"
 
         val COLUMN_ID = "id"
         val COLUMN_TITLE = "title"
@@ -37,10 +38,16 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         val CREATE_USER_INFO_TABLE = ("CREATE TABLE " + TABLE_USERS_INFO + "(" + COLUMN_NICK + " TEXT," +
                 COLUMN_SYNC + " DATE)")
         db.execSQL(CREATE_USER_INFO_TABLE)
+
+        val CREATE_EXPANSIONS_TABLE = ("CREATE TABLE " + TABLE_EXPANSIONS + "(" + COLUMN_ID + " INTEGER PRIMARY KEY," +
+                COLUMN_TITLE + " TEXT," + COLUMN_ORIGINAL_TITLE + " TEXT," + COLUMN_YEAR + " INT," +
+                COLUMN_IMG + " TEXT," + COLUMN_THUMBNAIL + " TEXT"  + ")")
+        db.execSQL(CREATE_EXPANSIONS_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int){
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GAMES)
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EXPANSIONS)
         onCreate(db)
     }
 
@@ -49,7 +56,7 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         this.writableDatabase.execSQL("DROP TABLE $TABLE_GAMES")
     }
 
-    fun addGame(game: Game){
+    fun addGame(game: Game, where: String){
         val values = ContentValues()
         values.put(COLUMN_ID, game.id)
         values.put(COLUMN_TITLE, game.title)
@@ -58,7 +65,12 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         values.put(COLUMN_IMG, game.img)
         values.put(COLUMN_THUMBNAIL, game.thumbnail)
         val db = this.writableDatabase
-        db.insert(TABLE_GAMES, null, values)
+        if(where=="games") {
+            db.insert(TABLE_GAMES, null, values)
+        }
+        else if(where=="expansions"){
+            db.insert(TABLE_EXPANSIONS, null, values)
+        }
         db.close()
     }
 
@@ -80,15 +92,27 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         db.close()
     }
 
-    fun deleteGames(){
-        val query = "DELETE FROM $TABLE_GAMES"
+    fun deleteGames(where: String){
+        var query = ""
+        if(where=="games") {
+            query = "DELETE FROM $TABLE_GAMES"
+        }
+        else if(where=="expansions"){
+            query = "DELETE FROM $TABLE_EXPANSIONS"
+        }
         val db = this.writableDatabase
         db.execSQL(query)
         db.close()
     }
 
-    fun countGames(): Int {
-        val query = "SELECT COUNT(*) FROM $TABLE_GAMES"
+    fun countGames(where: String): Int {
+        var query = ""
+        if(where=="games") {
+            query = "SELECT COUNT(*) FROM $TABLE_GAMES"
+        }
+        else if(where=="expansions"){
+            query = "SELECT COUNT(*) FROM $TABLE_EXPANSIONS"
+        }
         val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)
         var res = 0
@@ -111,8 +135,14 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         return res
     }
 
-    fun findGame(gameID: Long):Game?{
-        val query = "SELECT * FROM $TABLE_GAMES WHERE $COLUMN_ID = $gameID"
+    fun findGame(gameID: Long, where: String):Game?{
+        var query = ""
+        if(where=="games") {
+            query = "SELECT * FROM $TABLE_GAMES WHERE $COLUMN_ID = $gameID"
+        }
+        else if(where=="expansions"){
+            query = "SELECT * FROM $TABLE_EXPANSIONS WHERE $COLUMN_ID = $gameID"
+        }
         val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)
         var game: Game? =null
@@ -142,9 +172,15 @@ version: Int): SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSIO
         return null
     }
 
-    fun getGamesList():MutableList<Game>{
-        var gamesList: MutableList<Game> = mutableListOf()
-        val query = "SELECT * FROM $TABLE_GAMES"
+    fun getGamesList(where: String):MutableList<Game>{
+        val gamesList: MutableList<Game> = mutableListOf()
+        var query = ""
+        if(where=="games") {
+            query = "SELECT * FROM $TABLE_GAMES"
+        }
+        else if(where=="expansions"){
+            query = "SELECT * FROM $TABLE_EXPANSIONS"
+        }
         val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)
         var game: Game ?= null

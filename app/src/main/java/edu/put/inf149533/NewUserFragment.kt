@@ -32,28 +32,27 @@ class NewUserFragment(val context1: Context, val db: MyDBHandler) : Fragment() {
 
         logInButton.setOnClickListener{
             db.deleteUsers()
-            db.deleteGames()
             var url = "https://boardgamegeek.com/xmlapi2/user?name="+username.text.toString()
             DataLoader(context1).loadData("user.xml")
             DataLoader(context1).showData(db, "user.xml", username.text.toString())
             DataLoader(context1).downloadFile(url, db, "user.xml", username.text.toString())
+            val text = "Loading content. Press Log In to continue when visible"
+            val toast = Toast.makeText(context1, text, duration)
+            toast.show()
             CoroutineScope(Dispatchers.Main).launch {
-                url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
-                        username.text.toString() +
-                        "&subtype=boardgame&excludesubtype=boardgameexpansion&own=1"
-                println(url)
-                DataLoader(context1).loadData("games.xml")
-                DataLoader(context1).showData(db, "games.xml", username.text.toString())
-                DataLoader(context1).downloadFile(url, db, "games.xml", username.text.toString())
-                val text = "Press Log In button to continue"
-                val toast = Toast.makeText(context1, text, duration)
-                toast.show()
+                db.deleteGames("games")
+                db.deleteGames("expansions")
+                doLoad()
+                delay(2000)
+                db.deleteGames("games")
+                db.deleteGames("expansions")
+                doLoad()
             }
             CoroutineScope(Dispatchers.Main).launch {
-                delay(2000)
+                delay(4000)
                 nextButton.visibility = View.VISIBLE
             }
-            }
+        }
 
         nextButton.setOnClickListener{
             val logInResult = db.ifUser()
@@ -72,5 +71,25 @@ class NewUserFragment(val context1: Context, val db: MyDBHandler) : Fragment() {
             }
         }
         return view
+    }
+
+    fun doLoad(){
+        CoroutineScope(Dispatchers.Main).launch {
+            val url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
+                    username.text.toString() +
+                    "&subtype=boardgame&excludesubtype=boardgameexpansion&own=1"
+            DataLoader(context1).loadData("games.xml")
+            DataLoader(context1).showData(db, "games.xml", username.text.toString())
+            DataLoader(context1).downloadFile(url, db, "games.xml", username.text.toString())
+        }
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(1000)
+            val url = "https://boardgamegeek.com/xmlapi2/collection?username=" +
+                    username.text.toString() +
+                    "&subtype=boardgameexpansion&own=1"
+            DataLoader(requireContext()).loadData("expansions.xml")
+            DataLoader(requireContext()).showData(db, "expansions.xml", username.text.toString())
+            DataLoader(requireContext()).downloadFile(url, db, "expansions.xml", username.text.toString())
+        }
     }
 }

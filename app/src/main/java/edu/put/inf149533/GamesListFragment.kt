@@ -22,7 +22,9 @@ import java.net.MalformedURLException
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class GamesListFragment(val db: MyDBHandler) : Fragment() {
+class GamesListFragment(val db: MyDBHandler,
+                        private val listGames: MutableList<Game>,
+                        private val headerText: String) : Fragment() {
     var gameInfo: MutableList<GameDesc> = mutableListOf()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +49,6 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
     @SuppressLint("SetTextI18n")
     fun generateTable(view: View){
         val sortMenuButton = view.findViewById<Button>(R.id.orderButton)
-        val listGames: MutableList<Game> = db.getGamesList()
         sortMenuButton.setOnClickListener {
             val context = ContextThemeWrapper(requireContext(), R.style.PopupMenuTheme)
             val popupMenu = PopupMenu(context, sortMenuButton)
@@ -74,6 +75,7 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
 
     @SuppressLint("SetTextI18n")
     fun showData(view: View, listGames: MutableList<Game>){
+        view.findViewById<TextView>(R.id.textView).text = headerText
         val tableLayout = view.findViewById<TableLayout>(R.id.tableLayout)
         tableLayout.removeAllViews()
         tableLayout.setPadding(0,25,0,100)
@@ -113,7 +115,8 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
             val linearLayout = LinearLayout(requireContext())
             linearLayout.orientation = LinearLayout.VERTICAL
             val text1 = TextView(requireContext())
-            text1.text = game.originalTitle.toString().substringBefore(':')
+            val cutTitle = game.originalTitle.toString().substringBefore('(')
+            text1.text = cutTitle.toString().substringBefore(':')
             text1.setTextColor(Color.WHITE)
             text1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
 
@@ -121,9 +124,6 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            //text1.maxLines = 2
-            //text1.ellipsize = TextUtils.TruncateAt.END
-
             linearLayout.addView(text1)
             val text2 = TextView(requireContext())
             text2.text = "Year: " + game.year.toString()
@@ -149,7 +149,7 @@ class GamesListFragment(val db: MyDBHandler) : Fragment() {
                 CoroutineScope(Dispatchers.Main).launch {
                     delay(1500)
                     if (gameInfo.size != 0) {
-                        val gamesDet = GameDetFragment(game, gameInfo[0], db)
+                        val gamesDet = GameDetFragment(game, gameInfo[0], db, listGames, headerText)
                         val transaction: FragmentTransaction =
                             parentFragmentManager.beginTransaction()
                         transaction.hide(this@GamesListFragment)

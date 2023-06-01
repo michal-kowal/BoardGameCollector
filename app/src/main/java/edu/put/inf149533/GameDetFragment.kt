@@ -24,7 +24,8 @@ import java.io.InputStream
 import java.io.OutputStream
 
 
-class GameDetFragment (val game: Game, val gameDet: GameDesc, val db: MyDBHandler) : Fragment() {
+class GameDetFragment (private val game: Game, private val gameDet: GameDesc, val db: MyDBHandler,
+                       val listGames: MutableList<Game>, val passText: String) : Fragment() {
     lateinit var newImage: ImageView
     private lateinit var resultLauncher: ActivityResultLauncher<Uri>
     private lateinit var mGetContent: ActivityResultLauncher<String>
@@ -87,7 +88,7 @@ class GameDetFragment (val game: Game, val gameDet: GameDesc, val db: MyDBHandle
         val view: View = inflater.inflate(R.layout.fragment_game_det, container, false)
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val fragment = GamesListFragment(db)
+                val fragment = GamesListFragment(db, listGames, passText)
                 parentFragmentManager.beginTransaction()
                     .replace(android.R.id.content, fragment)
                     .commit()

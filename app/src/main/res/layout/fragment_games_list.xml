@@ -26,14 +26,13 @@
                 android:id="@+id/textView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.72"
                 android:fontFamily="@font/be_vietnam_medium"
-                android:text="OWNED GAMES"
+                android:letterSpacing="0.25"
+                android:text="MY GAMES"
                 android:textAlignment="center"
                 android:textColor="#ffffff"
-                android:textSize="20sp"
-                android:layout_weight="0.72"
-                android:letterSpacing="0.25"
-                />
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/orderButton"
