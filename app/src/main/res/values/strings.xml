@@ -104,4 +104,5 @@
     <string name="authorities">edu.put.inf149533.fileprovider</string>
     <string name="temp_images_dir">temp_images</string>
     <string name="sync_warn">Last synchronisation was less than 24h ago. Do you want to continue?</string>
+    <string name="temp_image">temp_image.jpg</string>
 </resources>
